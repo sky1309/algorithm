@@ -1,5 +1,9 @@
 package main
 
+import (
+	"math/bits"
+)
+
 /**
 https://leetcode.cn/problems/can-make-palindrome-from-substring/
 1177. 构建回文串检测
@@ -56,5 +60,26 @@ func canMakePaliQueries(s string, queries [][]int) []bool {
 		ans[i] = cnt/2 <= k
 	}
 
+	return ans
+}
+
+func canMakePaliQueries_1(s string, queries [][]int) []bool {
+	// 前缀异或和
+	n := len(s)
+	// 前缀字符出现的次数, 用一个uint32的各个位的表示26个字母出现的奇偶情况
+	prefix := make([]uint32, n+1)
+	for i := 0; i < n; i++ {
+		// 偶数次位0  奇数次位1
+		prefix[i+1] = prefix[i] ^ (1 << (s[i] - 'a')) // 00->0  01->1 10->1
+	}
+
+	ans := make([]bool, len(queries))
+	for i, q := range queries {
+		left, right, k := q[0], q[1], q[2]
+
+		// 计算2个前缀亦或后为1的bit的数量
+		cnt := bits.OnesCount(uint(prefix[right+1] ^ prefix[left]))
+		ans[i] = int(cnt/2) <= k
+	}
 	return ans
 }
