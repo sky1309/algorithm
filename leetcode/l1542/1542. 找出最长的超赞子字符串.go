@@ -1,5 +1,7 @@
 package main
 
+import "math/bits"
+
 /**
 1542. 找出最长的超赞子字符串
 困难
@@ -37,5 +39,63 @@ package main
 s 仅由数字组成
 */
 
+func longestAwesome_1(s string) int {
+	// 前缀和暴力解法，超时！！！
+	n := len(s)
+	sum := make([]int, n+1)
+	for i := 0; i < n; i++ {
+		sum[i+1] = sum[i] ^ (1 << (s[i] - '0'))
+	}
+
+	ans := 0
+	for i := 0; i < n; i++ {
+		for j := 0; j <= i; j++ {
+			if bits.OnesCount(uint(sum[i+1]^sum[j])) <= 1 {
+				ans = max(ans, i-j+1)
+				break
+			}
+		}
+	}
+	return ans
+}
+
 func longestAwesome(s string) int {
+	n := len(s)
+
+	/*
+		前缀异或，当i->j是超赞子字符串时
+			1. 偶数个数的情况，则    pre[i] ^ pre[j] == 0   pre[i]==pre[j]
+			2. 只存在一个位位1，     pre[i] ^ pre[j] = 2**k
+
+	*/
+
+	const D = 10 // 每位元素的情况数0-9
+	pos := [1 << D]int{}
+	for i := 0; i < len(pos); i++ {
+		pos[i] = n
+	}
+
+	pos[0] = -1
+
+	ans := 0
+	pre := 0
+	for i := 0; i < n; i++ {
+		// 统计[0,i]前缀出现的次数
+		pre = pre ^ (1 << (s[i] - '0'))
+
+		// 偶数的情况，找之前出现过和当前pre相同的索引
+		ans = max(ans, i-pos[pre])
+
+		// 奇数的情况，遍历所有的位0-9，枚举所有位为0的情况
+		for j := 0; j < D; j++ {
+			ans = max(ans, i-pos[pre^(1<<j)])
+		}
+
+		// 更新最左边的索引
+		if pos[pre] == n {
+			pos[pre] = i
+		}
+	}
+
+	return ans
 }
