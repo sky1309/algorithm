@@ -1,4 +1,4 @@
-package l5
+package main
 
 /**
 https://leetcode.cn/problems/longest-palindromic-substring

@@ -1,4 +1,4 @@
-package l41
+package main
 
 /**
 https://leetcode.cn/problems/first-missing-positive/description
