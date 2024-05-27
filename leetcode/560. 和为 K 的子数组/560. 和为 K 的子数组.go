@@ -26,14 +26,16 @@ package main
 */
 
 func subarraySum(nums []int, k int) int {
-	// []int{1, 2, 3} 3
-
 	ans := 0
+	// 用hash表记录前缀出现的次数
 	hash := make(map[int]int)
 	hash[0] = 1
+
+	// 前缀和
 	pre := 0
 	for _, x := range nums {
 		pre += x
+		// 如果之前出现过 pre-k的前缀和，则 ans += cnt
 		if cnt, ok := hash[pre-k]; ok {
 			ans += cnt
 		}
