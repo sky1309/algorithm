@@ -39,7 +39,7 @@ func (f *FenWickTree) Add(i int, val int) {
 	}
 }
 
-func (f *FenWickTree) Query(i int) int {
+func (f *FenWickTree) PreSum(i int) int {
 	sum := 0
 	for k := i + 1; k > 0; k -= (k & -k) {
 		sum += f.bits[k]
@@ -47,6 +47,6 @@ func (f *FenWickTree) Query(i int) int {
 	return sum
 }
 
-func (f *FenWickTree) PreSum(l, r int) int {
-	return f.Query(r) - f.Query(l-1)
+func (f *FenWickTree) Range(l, r int) int {
+	return f.PreSum(r) - f.PreSum(l-1)
 }
